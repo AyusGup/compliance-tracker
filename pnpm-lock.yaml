@@ -78,6 +78,9 @@ importers:
       express:
         specifier: ^4.19.2
         version: 4.22.1
+      helmet:
+        specifier: ^8.1.0
+        version: 8.1.0
       morgan:
         specifier: ^1.10.1
         version: 1.10.1
@@ -1477,6 +1480,10 @@ packages:
 
   heap@0.2.7:
     resolution: {integrity: sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==}
+
+  helmet@8.1.0:
+    resolution: {integrity: sha512-jOiHyAZsmnr8LqoPGmCjYAaiuWwjAPLgY8ZX2XrmHawt99/u1y6RgrZMTeoPfpUbV96HOalYgz1qzkRbw54Pmg==}
+    engines: {node: '>=18.0.0'}
 
   http-errors@2.0.1:
     resolution: {integrity: sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==}
@@ -3394,6 +3401,8 @@ snapshots:
       function-bind: 1.1.2
 
   heap@0.2.7: {}
+
+  helmet@8.1.0: {}
 
   http-errors@2.0.1:
     dependencies:
