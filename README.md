@@ -34,7 +34,6 @@ A full-stack compliance task tracker built with **Node.js, Express, TypeScript, 
     ```
 5.  **Access the App**:
     - **Dashboard**: [http://localhost:8080](http://localhost:8080)
-    - **API Health**: [http://localhost:8080](http://localhost:8080) (`/` route)
 
 ## Security & Production Design
 
