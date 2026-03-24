@@ -20,9 +20,9 @@ export const updateTaskStatusSchema = z.object({
 export const getTasksQuerySchema = z.object({
   query: z.object({
     search: z.string().optional(),
-    status: z.enum(['Pending', 'In Progress', 'Completed']).optional(),
-    category: z.string().optional(),
-    sortBy: z.enum(['dueDate', 'priority', 'status']).optional(),
-    sortOrder: z.enum(['asc', 'desc']).optional().default('asc')
+    status: z.preprocess((v) => v === '' ? undefined : v, z.enum(['Pending', 'In Progress', 'Completed']).optional()),
+    category: z.preprocess((v) => v === '' ? undefined : v, z.string().optional()),
+    sortBy: z.preprocess((v) => v === '' ? undefined : v, z.enum(['dueDate', 'priority', 'status']).optional()),
+    sortOrder: z.preprocess((v) => v === '' ? undefined : v, z.enum(['asc', 'desc']).optional().default('asc'))
   })
 });
