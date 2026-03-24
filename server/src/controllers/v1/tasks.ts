@@ -18,9 +18,16 @@ export const getTasks = async (req: Request, res: Response, next: NextFunction) 
     if (category) filters.push(eq(tasks.category, category as any));
     if (search) filters.push(ilike(tasks.title, `%${search as string}%`));
 
+    const priorityOrder = sql`CASE 
+      WHEN ${tasks.priority} = 'High' THEN 3 
+      WHEN ${tasks.priority} = 'Medium' THEN 2 
+      WHEN ${tasks.priority} = 'Low' THEN 1 
+      ELSE 0 
+    END`;
+
     const queryBy = sortBy === 'priority' ? 
-      (sortOrder === 'desc' ? desc(tasks.priority) : asc(tasks.priority)) :
-      (sortOrder === 'desc' ? desc(tasks.dueDate) : asc(tasks.dueDate));
+      (sortOrder === 'desc' ? desc(priorityOrder) : asc(priorityOrder)) :
+      (sortOrder === 'asc' ? asc(tasks.dueDate) : desc(tasks.dueDate));
 
     const [clientTasks, totalCountResult] = await Promise.all([
       db.select().from(tasks)

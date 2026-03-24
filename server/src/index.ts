@@ -23,12 +23,11 @@ app.use(cors({
 app.use(morgan(ENV === 'dev' ? 'dev' : 'combined'));
 app.use(express.json());
 
-// Default Health Check
-app.get('/', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
-    service: 'compliance-tracker-api',
-    environment: ENV 
+app.get('/api', (req, res) => {
+  res.json({
+    status: 'online',
+    version: 'v1.0',
+    service: 'Compliance Tracker API'
   });
 });
 
