@@ -1,14 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 import { db } from '../../db';
 import { tasks } from '../../db/schema';
-import { eq, and, ilike, asc, desc } from 'drizzle-orm';
+import { eq, sql, and, ilike, asc, desc } from 'drizzle-orm';
+
 
 export const getTasks = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { clientId } = req.params;
-    const { search, status, category, sortBy, sortOrder } = req.query;
+    const { search, status, category, sortBy, sortOrder, page, limit } = req.query as any;
 
-    const filters = [eq(tasks.clientId, parseInt(clientId))];
+    const pageNum = Math.max(1, page);
+    const limitNum = Math.max(1, limit);
+    const offset = (pageNum - 1) * limitNum;
+
+    const filters = [eq(tasks.clientId, clientId)];
     if (status) filters.push(eq(tasks.status, status as any));
     if (category) filters.push(eq(tasks.category, category as any));
     if (search) filters.push(ilike(tasks.title, `%${search as string}%`));
@@ -17,11 +22,21 @@ export const getTasks = async (req: Request, res: Response, next: NextFunction) 
       (sortOrder === 'desc' ? desc(tasks.priority) : asc(tasks.priority)) :
       (sortOrder === 'desc' ? desc(tasks.dueDate) : asc(tasks.dueDate));
 
-    const clientTasks = await db.select().from(tasks)
-      .where(and(...filters))
-      .orderBy(queryBy);
+    const [clientTasks, totalCountResult] = await Promise.all([
+      db.select().from(tasks)
+        .where(and(...filters))
+        .orderBy(queryBy)
+        .limit(limitNum)
+        .offset(offset),
+      db.select({ count: require('drizzle-orm').sql<number>`count(*)` })
+        .from(tasks)
+        .where(and(...filters))
+    ]);
 
-    res.json(clientTasks);
+    res.json({
+      tasks: clientTasks,
+      total: Number(totalCountResult[0].count)
+    });
   } catch (error) {
     next(error);
   }
@@ -33,7 +48,7 @@ export const createTask = async (req: Request, res: Response, next: NextFunction
 
     const [newTask] = await db.insert(tasks).values({
       ...req.body,
-      clientId: parseInt(clientId),
+      clientId: clientId,
     }).returning();
 
     res.status(201).json(newTask);
@@ -49,7 +64,7 @@ export const updateTaskStatus = async (req: Request, res: Response, next: NextFu
 
     const [updatedTask] = await db.update(tasks)
       .set({ status })
-      .where(eq(tasks.id, parseInt(id)))
+      .where(eq(tasks.id, id))
       .returning();
 
     if (!updatedTask) return res.status(404).json({ message: 'Task not found' });
@@ -63,17 +78,21 @@ export const updateTaskStatus = async (req: Request, res: Response, next: NextFu
 export const getTaskSummary = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { clientId } = req.params;
-    const cid = parseInt(clientId);
+    const cid = clientId;
 
-    const allTasks = await db.select().from(tasks).where(eq(tasks.clientId, cid));
-    
-    const summary = {
-      total: allTasks.length,
-      pending: allTasks.filter(t => t.status !== 'Completed').length,
-      overdue: allTasks.filter(t => t.status !== 'Completed' && new Date(t.dueDate) < new Date()).length
-    };
+    const [counts] = await db.select({
+      total: sql<number>`COUNT(*)`,
+      pending: sql<number>`COUNT(*) FILTER (WHERE status != 'Completed')`,
+      overdue: sql<number>`COUNT(*) FILTER (WHERE status != 'Completed' AND "due_date" < NOW())`
+    })
+    .from(tasks)
+    .where(eq(tasks.clientId, cid));
 
-    res.json(summary);
+    res.json({
+      total: Number(counts.total),
+      pending: Number(counts.pending),
+      overdue: Number(counts.overdue)
+    });
   } catch (error) {
     next(error);
   }
