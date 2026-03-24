@@ -11,8 +11,7 @@ pnpm install
 ## 2. Environment Variables
 Create a `.env` file in the `server` directory:
 ```env
-# Your provided Supabase credentials
-DATABASE_URL=postgresql://postgres:pass@db.bpsyunehmccnggmsjslv.supabase.co:5432/postgres
+DATABASE_URL=
 PORT=3000
 NODE_ENV=development
 ```
