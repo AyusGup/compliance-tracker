@@ -14,7 +14,7 @@ export const getClients = async (): Promise<Client[]> => {
 
 export const getTasks = async (
   clientId: string, 
-  filters: { search?: string; status?: string; category?: string; sortBy?: string; page?: number; limit?: number } = {}
+  filters: { search?: string; status?: string; category?: string; sortBy?: string; sortOrder?: string; page?: number; limit?: number } = {}
 ): Promise<{ tasks: Task[]; total: number }> => {
   const { data } = await api.get(`/tasks/client/${clientId}`, { params: filters });
   return data;

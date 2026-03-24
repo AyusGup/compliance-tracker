@@ -20,6 +20,7 @@ const TaskList = ({ clientId, onStatusChange }: TaskListProps) => {
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [sortBy, setSortBy] = useState('dueDate');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const debouncedSearch = useDebounce(searchTerm, 300);
@@ -34,6 +35,7 @@ const TaskList = ({ clientId, onStatusChange }: TaskListProps) => {
         status: statusFilter,
         category: categoryFilter,
         sortBy,
+        sortOrder,
         page,
         limit
       });
@@ -48,7 +50,7 @@ const TaskList = ({ clientId, onStatusChange }: TaskListProps) => {
 
   useEffect(() => {
     loadTasks();
-  }, [clientId, debouncedSearch, statusFilter, categoryFilter, sortBy, page]);
+  }, [clientId, debouncedSearch, statusFilter, categoryFilter, sortBy, sortOrder, page]);
 
   const handleStatusChange = async (taskId: string, newStatus: string) => {
     const previousTasks = [...tasks];
@@ -122,6 +124,19 @@ const TaskList = ({ clientId, onStatusChange }: TaskListProps) => {
             <option value="dueDate">Sort by Date</option>
             <option value="priority">Sort by Priority</option>
           </select>
+
+          <button
+            onClick={() => {
+              setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
+              setPage(1);
+            }}
+            title={sortOrder === 'asc' ? 'Sort Ascending' : 'Sort Descending'}
+            className="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all border-none flex items-center justify-center aspect-square shadow-sm active:scale-95 group"
+          >
+            <div className={`transition-transform duration-300 ${sortOrder === 'desc' ? 'rotate-180' : ''}`}>
+              <AlertCircle size={18} className="group-hover:text-indigo-600" />
+            </div>
+          </button>
 
           <button
             onClick={() => setIsFormOpen(true)}
