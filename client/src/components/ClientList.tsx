@@ -1,13 +1,12 @@
-import React from 'react';
 import { Client } from '../types';
 
 interface ClientListProps {
   clients: Client[];
-  selectedClientId?: number;
+  selectedClientId?: string;
   onSelect: (client: Client) => void;
 }
 
-const ClientList: React.FC<ClientListProps> = ({ clients, selectedClientId, onSelect }) => {
+const ClientList = ({ clients, selectedClientId, onSelect }: ClientListProps) => {
   return (
     <div className="p-4 space-y-2">
       <h3 className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Clients</h3>

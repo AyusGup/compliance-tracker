@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getTaskSummary } from '../api/api';
 import { TaskSummary } from '../types';
 import { Clock, CheckCircle, AlertTriangle, ListChecks } from 'lucide-react';
 
 interface SummaryStatsProps {
-  clientId: number;
+  clientId: string;
   refreshTrigger?: number;
 }
 
-const SummaryStats: React.FC<SummaryStatsProps> = ({ clientId, refreshTrigger }) => {
+const SummaryStats = ({ clientId, refreshTrigger }: SummaryStatsProps) => {
   const [summary, setSummary] = useState<TaskSummary | null>(null);
 
   useEffect(() => {

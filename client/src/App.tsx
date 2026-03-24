@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { getClients, getTasks, getTaskSummary } from './api/api';
-import { Client, Task, TaskSummary } from './types';
+import { useState, useEffect } from 'react';
+import { getClients } from './api/api';
+import { Client } from './types';
 import ClientList from './components/ClientList';
 import TaskList from './components/TaskList';
 import SummaryStats from './components/SummaryStats';
 import { Layout, Menu, X } from 'lucide-react';
 
-const App: React.FC = () => {
+const App = () => {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +38,7 @@ const App: React.FC = () => {
 
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-slate-900/50 z-40 backdrop-blur-sm transition-opacity"
           onClick={() => setIsSidebarOpen(false)}
         />
@@ -58,25 +58,25 @@ const App: React.FC = () => {
           </button>
         </div>
         <div className="flex-1 overflow-y-auto">
-          <ClientList 
-            clients={clients} 
-            selectedClientId={selectedClient?.id} 
+          <ClientList
+            clients={clients}
+            selectedClientId={selectedClient?.id}
             onSelect={(c) => {
               setSelectedClient(c);
               setIsSidebarOpen(false); // close sidebar on selection in mobile
-            }} 
+            }}
           />
         </div>
       </div>
 
       <main className="flex-1 flex flex-col overflow-hidden w-full lg:w-auto">
-        
+
         {/* Mobile Header */}
         <header className="lg:hidden bg-white border-b border-slate-200 p-4 flex items-center gap-4 shrink-0">
-           <button onClick={() => setIsSidebarOpen(true)} className="text-slate-600 hover:text-indigo-600 p-1 transition-colors">
-              <Menu size={24} />
-           </button>
-           <h1 className="font-bold text-lg tracking-tight">Compliance Tracker</h1>
+          <button onClick={() => setIsSidebarOpen(true)} className="text-slate-600 hover:text-indigo-600 p-1 transition-colors">
+            <Menu size={24} />
+          </button>
+          <h1 className="font-bold text-lg tracking-tight">Compliance Tracker</h1>
         </header>
 
         {selectedClient ? (

@@ -7,3 +7,4 @@ drizzle/
 client/dist/
 server/dist/
 pgdata/
+*vite.config.ts.timestamp-*

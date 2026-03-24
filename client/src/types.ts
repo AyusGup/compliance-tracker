@@ -1,13 +1,13 @@
 export interface Client {
-  id: number;
+  id: string;
   companyName: string;
   country: string;
   entityType: string;
 }
 
 export interface Task {
-  id: number;
-  clientId: number;
+  id: string;
+  clientId: string;
   title: string;
   description: string | null;
   category: string;
