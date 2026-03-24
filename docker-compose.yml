@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: compliance-db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: compliance_tracker
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: compliance-server
+    restart: always
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://user:password@db:5432/compliance_tracker
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: compliance-client
+    restart: always
+    depends_on:
+      - server
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:

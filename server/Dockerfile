@@ -4,7 +4,7 @@ WORKDIR /app
 RUN corepack enable
 
 # Metadata first for cache
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc ./
 COPY server/package.json ./server/
 
 # Cache dependencies
